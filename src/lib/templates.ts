@@ -49,17 +49,29 @@ export const TEMPLATES: AppTemplate[] = [
     id: 'business-info',
     name: 'Business Website',
     category: 'informational',
-    description: 'Display business details and services',
-    samplePrompt: 'A restaurant website with menu and contact info',
+    description: 'Create a professional business website with content management',
+    samplePrompt: 'A business website with about page, services, and contact information.',
     defaultStructure: {
-      pages: ['Home', 'Menu', 'About', 'Contact'],
-      features: ['MenuDisplay', 'ContactForm', 'BusinessHours', 'LocationMap'],
+      pages: ['Home', 'About', 'Services', 'Contact'],
+      features: ['ContentManagement', 'ContactForm'],
       models: {
-        MenuItem: {
+        BusinessInfo: {
           name: 'string',
           description: 'string',
-          price: 'number',
-          category: 'string'
+          mission: 'string',
+          contact: 'object'
+        },
+        Service: {
+          title: 'string',
+          description: 'string',
+          price: 'string',
+          features: 'string[]'
+        },
+        Content: {
+          section: 'string',
+          title: 'string',
+          body: 'string',
+          order: 'number'
         }
       }
     }

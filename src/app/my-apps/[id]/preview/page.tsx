@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, use } from 'react';
 import { SavedApp } from '@/lib/types';
+import PreviewEditor from '@/components/BusinessSite/PreviewEditor';
 
 export default function AppPreview({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
@@ -67,6 +68,12 @@ export default function AppPreview({ params }: { params: Promise<{ id: string }>
     );
   }
 
+  // Show business site editor only for business-info template
+  if (app.templateId === 'business-info') {
+    return <PreviewEditor app={app} onUpdate={setApp} />;
+  }
+
+  // Default preview for other templates
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="bg-white border-b">

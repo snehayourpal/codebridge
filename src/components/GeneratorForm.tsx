@@ -15,10 +15,13 @@ export default function GeneratorForm({
   const [input, setInput] = useState(template.samplePrompt);
   const [generatedApp, setGeneratedApp] = useState<AppStructure | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleGenerate = async () => {
     try {
       setIsGenerating(true);
+      setError(null);
+      
       const response = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -27,19 +30,34 @@ export default function GeneratorForm({
           template: template.id 
         })
       });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate app structure');
+      }
+
       const data = await response.json();
+      console.log('Generated app data:', data); // Debug log
+      
+      // Ensure the data has the required structure
+      if (!data.pages || !data.features || !data.models) {
+        throw new Error('Invalid app structure received');
+      }
+
       setGeneratedApp(data);
     } catch (error) {
       console.error('Generation failed:', error);
+      setError(error instanceof Error ? error.message : 'An error occurred');
     } finally {
       setIsGenerating(false);
     }
   };
 
-  const handleSave = async (app: AppStructure) => {
+  const handleSave = async () => {
+    if (!generatedApp) return;
+
     try {
       const savedApp: SavedApp = {
-        ...app,
+        ...generatedApp,
         id: crypto.randomUUID(),
         name: template.name,
         category: template.category,
@@ -55,39 +73,37 @@ export default function GeneratorForm({
         body: JSON.stringify(savedApp)
       });
       
-      if (response.ok) {
-        onSave(savedApp);
+      if (!response.ok) {
+        throw new Error('Failed to save app');
       }
+
+      onSave(savedApp);
     } catch (error) {
       console.error('Failed to save app:', error);
+      setError(error instanceof Error ? error.message : 'Failed to save app');
     }
   };
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center mb-4">
-        <button
-          onClick={onBack}
-          className="text-gray-600 hover:text-gray-800 mr-4"
-        >
-          ← Back to Templates
-        </button>
-        <h1 className="text-2xl font-bold">{template.name} Generator</h1>
-      </div>
-
       <div className="bg-white p-6 rounded-lg shadow">
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Describe your application
-          </label>
-          <textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            className="w-full p-4 border rounded-lg mb-4 min-h-[100px]"
-            placeholder="Describe what you want your application to do..."
-            rows={4}
-          />
+        <div className="flex items-center mb-4">
+          <button
+            onClick={onBack}
+            className="text-gray-600 hover:text-gray-800 mr-4"
+          >
+            ← Back
+          </button>
+          <h2 className="text-xl font-bold">{template.name} Generator</h2>
         </div>
+        
+        <textarea
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          className="w-full p-4 border rounded-lg mb-4"
+          rows={4}
+          placeholder="Describe your application..."
+        />
 
         <button
           onClick={handleGenerate}
@@ -96,6 +112,12 @@ export default function GeneratorForm({
         >
           {isGenerating ? 'Generating...' : 'Generate App'}
         </button>
+
+        {error && (
+          <div className="mt-4 p-4 bg-red-50 text-red-600 rounded-lg">
+            {error}
+          </div>
+        )}
       </div>
 
       {generatedApp && (
@@ -103,13 +125,20 @@ export default function GeneratorForm({
           <div className="flex justify-between items-center mb-6">
             <h3 className="font-bold text-lg">Generated Structure</h3>
             <button
-              onClick={() => handleSave(generatedApp)}
+              onClick={handleSave}
               className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition-colors"
             >
               Save App
             </button>
           </div>
           
+          {/* Debug output */}
+          <div className="mb-4 p-4 bg-gray-50 rounded">
+            <pre className="text-sm overflow-auto">
+              {JSON.stringify(generatedApp, null, 2)}
+            </pre>
+          </div>
+
           <ResultsView data={generatedApp} />
         </div>
       )}
