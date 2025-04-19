@@ -13,6 +13,8 @@ interface PreviewEditorProps {
 export default function PreviewEditor({ app, onUpdate }: PreviewEditorProps) {
   const [activeSection, setActiveSection] = useState<'preview' | 'edit'>('preview');
   const [currentPage, setCurrentPage] = useState(app.pages[0] || 'Home');
+  const [error, setError] = useState<string | null>(null);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   // Initialize content if it doesn't exist
   const initialContent: BusinessContent = app.content || {
@@ -28,6 +30,9 @@ export default function PreviewEditor({ app, onUpdate }: PreviewEditorProps) {
 
   const handleParsedContent = async (content: BusinessContent) => {
     try {
+      setIsUpdating(true);
+      setError(null);
+
       const updatedApp: SavedApp = {
         ...app,
         content: {
@@ -39,19 +44,24 @@ export default function PreviewEditor({ app, onUpdate }: PreviewEditorProps) {
 
       const response = await fetch(`/api/apps/${app.id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(updatedApp)
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to update app');
+        const errorData = await response.json().catch(() => ({ error: 'Failed to parse error response' }));
+        throw new Error(errorData.error || `Server error: ${response.status}`);
       }
 
-      onUpdate(updatedApp);
+      const savedApp = await response.json();
+      onUpdate(savedApp);
     } catch (error) {
-      console.error('Failed to update app:', error);
-      // You might want to show an error message to the user here
+      console.error('Update failed:', error);
+      setError(error instanceof Error ? error.message : 'Failed to update app');
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -136,6 +146,20 @@ export default function PreviewEditor({ app, onUpdate }: PreviewEditorProps) {
           </div>
         </div>
       </div>
+
+      {error && (
+        <div className="max-w-7xl mx-auto px-4 py-2">
+          <div className="bg-red-50 text-red-600 px-4 py-2 rounded flex justify-between items-center">
+            <span>{error}</span>
+            <button 
+              onClick={() => setError(null)}
+              className="text-red-700 hover:text-red-800"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
 
       {activeSection === 'preview' ? (
         <div className="min-h-screen">
@@ -228,6 +252,15 @@ export default function PreviewEditor({ app, onUpdate }: PreviewEditorProps) {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {isUpdating && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-4 rounded shadow">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-2 text-gray-600">Updating...</p>
           </div>
         </div>
       )}

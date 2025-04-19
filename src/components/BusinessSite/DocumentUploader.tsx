@@ -12,7 +12,22 @@ export default function DocumentUploader({ onParsedContent }: DocumentUploaderPr
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file) return;
+    if (!file) {
+      setError('No file selected');
+      return;
+    }
+
+    // Only accept text files
+    if (file.type !== 'text/plain') {
+      setError('Please upload a text file (.txt)');
+      return;
+    }
+
+    // Validate file size (10MB limit)
+    if (file.size > 10 * 1024 * 1024) {
+      setError('File size must be less than 10MB');
+      return;
+    }
 
     try {
       setIsUploading(true);
@@ -26,16 +41,24 @@ export default function DocumentUploader({ onParsedContent }: DocumentUploaderPr
         body: formData,
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error('Failed to parse document');
+        throw new Error(data.error || data.details || 'Failed to parse document');
       }
 
-      const parsedContent: BusinessContent = await response.json();
-      onParsedContent(parsedContent);
+      if (!data.businessInfo) {
+        throw new Error('Could not extract business information from document');
+      }
+
+      onParsedContent(data);
     } catch (err) {
+      console.error('Upload error:', err);
       setError(err instanceof Error ? err.message : 'Failed to process document');
     } finally {
       setIsUploading(false);
+      // Clear the input
+      event.target.value = '';
     }
   };
 
@@ -48,7 +71,7 @@ export default function DocumentUploader({ onParsedContent }: DocumentUploaderPr
           <input
             type="file"
             onChange={handleFileUpload}
-            accept=".doc,.docx,.pdf,.txt"
+            accept=".txt"
             className="hidden"
             id="document-upload"
             disabled={isUploading}
@@ -73,7 +96,10 @@ export default function DocumentUploader({ onParsedContent }: DocumentUploaderPr
               </svg>
               <div className="text-sm">
                 {isUploading ? (
-                  'Processing...'
+                  <div className="flex items-center justify-center space-x-2">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                    <span>Processing...</span>
+                  </div>
                 ) : (
                   <>
                     <span className="text-blue-600">Upload a document</span>
@@ -82,25 +108,28 @@ export default function DocumentUploader({ onParsedContent }: DocumentUploaderPr
                 )}
               </div>
               <p className="text-xs text-gray-500">
-                DOC, DOCX, PDF, or TXT up to 10MB
+                Text file up to 10MB
               </p>
             </div>
           </label>
         </div>
 
         {error && (
-          <div className="text-red-600 text-sm p-2 bg-red-50 rounded">
-            {error}
+          <div className="text-red-600 text-sm p-4 bg-red-50 rounded">
+            <div className="font-medium">Error:</div>
+            <div>{error}</div>
           </div>
         )}
 
         <div className="text-sm text-gray-500">
-          <h4 className="font-medium mb-2">Document Guidelines:</h4>
+          <h4 className="font-medium mb-2">Document Format Guidelines:</h4>
           <ul className="list-disc pl-5 space-y-1">
-            <li>Include business name and description</li>
-            <li>List services or products with descriptions</li>
-            <li>Add contact information and business hours</li>
-            <li>Optional: mission statement and team information</li>
+            <li>Upload a text file (.txt)</li>
+            <li>Include "Business Name:" at the start</li>
+            <li>Add "Description:" for business overview</li>
+            <li>Include "Mission:" for mission statement</li>
+            <li>Add contact details with "Email:", "Phone:", etc.</li>
+            <li>Mark services with "Service:" followed by details</li>
           </ul>
         </div>
       </div>
