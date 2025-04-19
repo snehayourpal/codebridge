@@ -285,7 +285,7 @@ export default function PreviewEditor({ app, onUpdate }: PreviewEditorProps) {
                             type="text"
                             value={initialContent.businessInfo.name}
                             onChange={(e) => handleBusinessInfoUpdate('name', e.target.value)}
-                            className="w-full p-2 border rounded"
+                            className="w-full p-2 border rounded text-black"
                             placeholder="Enter your business name"
                           />
                         </div>
@@ -302,7 +302,7 @@ export default function PreviewEditor({ app, onUpdate }: PreviewEditorProps) {
                             value={initialContent.businessInfo.description}
                             onChange={(e) => handleBusinessInfoUpdate('description', e.target.value)}
                             rows={3}
-                            className="w-full p-2 border rounded"
+                            className="w-full p-2 border rounded text-black"
                             placeholder="Describe your business"
                           />
                         </div>
@@ -319,7 +319,7 @@ export default function PreviewEditor({ app, onUpdate }: PreviewEditorProps) {
                             value={initialContent.businessInfo.mission}
                             onChange={(e) => handleBusinessInfoUpdate('mission', e.target.value)}
                             rows={2}
-                            className="w-full p-2 border rounded"
+                            className="w-full p-2 border rounded text-black"
                             placeholder="What is your business mission?"
                           />
                         </div>
@@ -358,7 +358,7 @@ export default function PreviewEditor({ app, onUpdate }: PreviewEditorProps) {
                               };
                               onUpdate(updatedApp);
                             }}
-                            className="w-full p-2 border rounded"
+                            className="w-full p-2 border border-black rounded text-black"
                             placeholder="business@example.com"
                           />
                         </div>
@@ -385,7 +385,7 @@ export default function PreviewEditor({ app, onUpdate }: PreviewEditorProps) {
                               };
                               onUpdate(updatedApp);
                             }}
-                            className="w-full p-2 border rounded"
+                            className="w-full p-2 border border-black rounded text-black"
                             placeholder="(123) 456-7890"
                           />
                         </div>
@@ -412,7 +412,7 @@ export default function PreviewEditor({ app, onUpdate }: PreviewEditorProps) {
                               onUpdate(updatedApp);
                             }}
                             rows={2}
-                            className="w-full p-2 border rounded"
+                            className="w-full p-2 border border-black rounded text-black"
                             placeholder="Enter your business address"
                           />
                         </div>
@@ -444,7 +444,7 @@ export default function PreviewEditor({ app, onUpdate }: PreviewEditorProps) {
                                     };
                                     onUpdate(updatedApp);
                                   }}
-                                  className="flex-1 p-2 border rounded"
+                                  className="flex-1 p-2 border border-black rounded text-black"
                                   placeholder="Monday - Friday: 9am - 5pm"
                                 />
                                 <button
@@ -503,7 +503,7 @@ export default function PreviewEditor({ app, onUpdate }: PreviewEditorProps) {
 
                     {/* Services Section */}
                     <div>
-                      <h4 className="font-medium mb-4">Services</h4>
+                      <h4 className="font-medium mb-4 text-black">Services</h4>
                       {feedback?.recommendations.some(rec => rec.includes('service')) && (
                         <div className="bg-yellow-50 p-2 rounded mb-2">
                           <p className="text-yellow-700 text-sm">Add at least one service</p>
@@ -534,7 +534,7 @@ export default function PreviewEditor({ app, onUpdate }: PreviewEditorProps) {
                                   };
                                   onUpdate(updatedApp);
                                 }}
-                                className="w-full p-2 border rounded"
+                                className="w-full p-2 border border-black rounded text-black"
                                 placeholder="Service name"
                               />
                             </div>
@@ -560,7 +560,7 @@ export default function PreviewEditor({ app, onUpdate }: PreviewEditorProps) {
                                   onUpdate(updatedApp);
                                 }}
                                 rows={3}
-                                className="w-full p-2 border rounded"
+                                className="w-full p-2 border border-black rounded text-black"
                                 placeholder="Describe this service"
                               />
                             </div>
@@ -586,7 +586,7 @@ export default function PreviewEditor({ app, onUpdate }: PreviewEditorProps) {
                                   };
                                   onUpdate(updatedApp);
                                 }}
-                                className="w-full p-2 border rounded"
+                                className="w-full p-2 border border-black rounded text-black"
                                 placeholder="Starting at $99"
                               />
                             </div>
@@ -617,7 +617,7 @@ export default function PreviewEditor({ app, onUpdate }: PreviewEditorProps) {
                                         };
                                         onUpdate(updatedApp);
                                       }}
-                                      className="flex-1 p-2 border rounded"
+                                      className="flex-1 p-2 border border-black rounded text-black"
                                       placeholder="Feature description"
                                     />
                                     <button
