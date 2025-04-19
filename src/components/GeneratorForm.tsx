@@ -1,6 +1,6 @@
 'use client';
-import { AppTemplate, AppStructure, SavedApp } from '@/lib/types';
 import { useState } from 'react';
+import { AppTemplate, AppStructure, SavedApp } from '@/lib/types';
 import ResultsView from './AppGenerator/ResultsView';
 
 export default function GeneratorForm({
@@ -21,13 +21,13 @@ export default function GeneratorForm({
     try {
       setIsGenerating(true);
       setError(null);
-      
+
       const response = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           prompt: input,
-          template: template.id 
+          template: template.id
         })
       });
 
@@ -36,8 +36,8 @@ export default function GeneratorForm({
       }
 
       const data = await response.json();
-      console.log('Generated app data:', data); // Debug log
-      
+      console.log('Generated app data:', data);
+
       // Ensure the data has the required structure
       if (!data.pages || !data.features || !data.models) {
         throw new Error('Invalid app structure received');
@@ -66,13 +66,13 @@ export default function GeneratorForm({
         createdAt: new Date(),
         updatedAt: new Date()
       };
-      
+
       const response = await fetch('/api/apps', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(savedApp)
       });
-      
+
       if (!response.ok) {
         throw new Error('Failed to save app');
       }
@@ -86,21 +86,22 @@ export default function GeneratorForm({
 
   return (
     <div className="space-y-6">
+      {/* Form Section */}
       <div className="bg-white p-6 rounded-lg shadow">
         <div className="flex items-center mb-4">
           <button
             onClick={onBack}
-            className="text-gray-600 hover:text-gray-800 mr-4"
+            className="text-[#010079] hover:text-[#1B73D3] mr-4"
           >
             ← Back
           </button>
-          <h2 className="text-xl font-bold">{template.name} Generator</h2>
+          <h2 className="text-xl font-bold text-[#010079]">{template.name} Generator</h2>
         </div>
-        
+
         <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          className="w-full p-4 border rounded-lg mb-4"
+          className="w-full p-4 border rounded-lg mb-4 border-[#1B73D3] text-[#1B73D3]"
           rows={4}
           placeholder="Describe your application..."
         />
@@ -108,7 +109,7 @@ export default function GeneratorForm({
         <button
           onClick={handleGenerate}
           disabled={isGenerating}
-          className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:bg-blue-300 transition-colors"
+          className="bg-[#1B73D3] text-white px-6 py-2 rounded-lg hover:bg-[#155bb0] disabled:bg-[#1B73D3]/50 transition-colors"
         >
           {isGenerating ? 'Generating...' : 'Generate App'}
         </button>
@@ -120,25 +121,27 @@ export default function GeneratorForm({
         )}
       </div>
 
+      {/* Generated Structure Section */}
       {generatedApp && (
         <div className="bg-white p-6 rounded-lg shadow">
           <div className="flex justify-between items-center mb-6">
-            <h3 className="font-bold text-lg">Generated Structure</h3>
+            <h3 className="font-bold text-lg text-[#010079]">Generated Structure</h3>
             <button
               onClick={handleSave}
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition-colors"
+              className="bg-[#010079] hover:bg-[#1B73D3] text-white px-4 py-2 rounded transition-colors"
             >
               Save App
             </button>
           </div>
-          
-          {/* Debug output */}
-          <div className="mb-4 p-4 bg-gray-50 rounded">
-            <pre className="text-sm overflow-auto">
+
+          {/* Debug Output */}
+          <div className="mb-4 p-4 bg-[#f0f4ff] rounded">
+            <pre className="text-sm overflow-auto text-[#010079]">
               {JSON.stringify(generatedApp, null, 2)}
             </pre>
           </div>
 
+          {/* Results View Component */}
           <ResultsView data={generatedApp} />
         </div>
       )}

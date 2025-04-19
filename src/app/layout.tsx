@@ -13,24 +13,34 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-gray-50">
+      <body className="bg-[#f5f5f7]">
         <nav className="bg-white shadow">
           <div className="max-w-7xl mx-auto px-4">
             <div className="flex justify-between h-16">
-              <div className="flex items-center space-x-4">
-                <a href="/" className="text-gray-900 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium">
-                  Generate New
+              <div className="flex items-center">
+                <a href="/" className="text-[#010079] font-bold text-lg mr-8">
+                  App Generator
                 </a>
-                <a href="/my-apps" className="text-gray-900 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium">
-                  My Apps
-                </a>
+                <div className="flex items-center space-x-1">
+                  <a href="/" className="text-[#1B73D3] hover:text-[#010079] hover:bg-blue-50 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                    Generate New
+                  </a>
+                  <a href="/my-apps" className="text-[#1B73D3] hover:text-[#010079] hover:bg-blue-50 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                    My Apps
+                  </a>
+                </div>
               </div>
             </div>
           </div>
         </nav>
-        <main className="min-h-screen">
+        <main className="min-h-screen bg-[#f5f5f7]">
           {children}
         </main>
+        <footer className="bg-white border-t border-gray-200 mt-12">
+          <div className="max-w-7xl mx-auto px-4 py-6 text-center text-sm text-[#1B73D3]">
+            App Generator © {new Date().getFullYear()}
+          </div>
+        </footer>
       </body>
     </html>
   );

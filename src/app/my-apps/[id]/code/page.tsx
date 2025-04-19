@@ -16,15 +16,10 @@ export default function AppCode({ params }: { params: Promise<{ id: string }> })
       try {
         setIsLoading(true);
         const response = await fetch(`/api/apps/${resolvedParams.id}`);
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch app data');
-        }
-        
+        if (!response.ok) throw new Error('Failed to fetch app data');
+
         const data = await response.json();
         setApp(data);
-        
-        // Generate files once we have the app data
         const generatedFiles = await generateAppFiles(data);
         setFiles(generatedFiles);
         setSelectedFile(Object.keys(generatedFiles)[0]);
@@ -39,21 +34,21 @@ export default function AppCode({ params }: { params: Promise<{ id: string }> })
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-gray-600">Loading...</div>
+      <div className="flex items-center justify-center min-h-screen bg-white">
+        <div className="text-[#010079]">Loading...</div>
       </div>
     );
   }
 
   if (error || !app) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-red-600">
+      <div className="flex items-center justify-center min-h-screen bg-white">
+        <div className="text-red-600 text-center">
           {error || 'Failed to load app'}
           <br />
           <button 
             onClick={() => window.location.href = '/my-apps'}
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            className="mt-4 px-4 py-2 bg-[#1B73D3] text-white rounded hover:bg-[#155bb0]"
           >
             Return to My Apps
           </button>
@@ -63,24 +58,24 @@ export default function AppCode({ params }: { params: Promise<{ id: string }> })
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">{app.name} - Code</h1>
+          <h1 className="text-2xl font-bold text-[#010079]">{app.name} - Code</h1>
           <a
             href="/my-apps"
-            className="text-gray-600 hover:text-gray-900"
+            className="text-[#1B73D3] hover:underline"
           >
             Back to Apps
           </a>
         </div>
 
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="bg-[#010079] rounded-lg shadow overflow-hidden">
           <div className="grid grid-cols-4 min-h-[600px]">
             {/* File Explorer */}
-            <div className="border-r">
+            <div className="border-r border-[#1B73D3] bg-[#010079] text-white">
               <div className="p-4">
-                <h2 className="text-sm font-medium text-gray-500 mb-2">Files</h2>
+                <h2 className="text-sm font-medium text-[#1B73D3] mb-2">Files</h2>
                 <div className="space-y-1">
                   {Object.keys(files).map((filename) => (
                     <button
@@ -88,8 +83,8 @@ export default function AppCode({ params }: { params: Promise<{ id: string }> })
                       onClick={() => setSelectedFile(filename)}
                       className={`w-full text-left px-2 py-1 rounded text-sm ${
                         selectedFile === filename
-                          ? 'bg-blue-50 text-blue-700'
-                          : 'hover:bg-gray-50'
+                          ? 'bg-[#1B73D3] text-white'
+                          : 'hover:bg-[#1B73D3]/20'
                       }`}
                     >
                       {filename}
@@ -100,15 +95,15 @@ export default function AppCode({ params }: { params: Promise<{ id: string }> })
             </div>
 
             {/* Code View */}
-            <div className="col-span-3">
+            <div className="col-span-3 bg-white">
               <div className="p-4">
                 {selectedFile && (
                   <>
-                    <div className="text-sm font-mono mb-2 text-gray-500">
+                    <div className="text-sm font-mono mb-2 text-[#1B73D3]">
                       {selectedFile}
                     </div>
-                    <pre className="bg-gray-50 p-4 rounded-lg overflow-x-auto">
-                      <code className="text-sm font-mono">
+                    <pre className="bg-[#f0f4ff] text-[#010079] p-4 rounded-lg overflow-x-auto">
+                      <code className="text-sm font-mono whitespace-pre-wrap">
                         {files[selectedFile]}
                       </code>
                     </pre>
@@ -121,4 +116,4 @@ export default function AppCode({ params }: { params: Promise<{ id: string }> })
       </div>
     </div>
   );
-} 
+}
