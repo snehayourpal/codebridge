@@ -4,6 +4,7 @@ import { SavedApp, BusinessContent } from '@/lib/types';
 import DocumentUploader from './DocumentUploader';
 import Navigation from './Navigation';
 import { HomePage, AboutPage, ServicesPage, ContactPage } from './PageTemplates';
+import ChatBot from './ChatBot';
 
 interface PreviewEditorProps {
   app: SavedApp;
@@ -238,399 +239,229 @@ export default function PreviewEditor({ app, onUpdate }: PreviewEditorProps) {
           <div className="space-y-6">
             <DocumentUploader onParsedContent={handleParsedContent} />
             
-            {/* Content Editor */}
-            <div className="bg-white p-6 rounded-lg shadow">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-lg font-semibold">Content Editor</h3>
-                {feedback && (
-                  <div className="flex items-center space-x-4">
-                    {feedback.recommendations.length > 0 ? (
-                      <div className="bg-yellow-50 p-3 rounded">
-                        <p className="text-yellow-700">
-                          Some fields are missing. You can add them below or proceed with the current content.
-                        </p>
-                      </div>
-                    ) : (
-                      <div className="bg-green-50 p-3 rounded">
-                        <p className="text-green-700">Great! Your content looks complete.</p>
-                      </div>
-                    )}
-                    <button
-                      onClick={handleApplyToPreview}
-                      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                    >
-                      Proceed to Preview
-                    </button>
-                  </div>
-                )}
-              </div>
-              <div className="space-y-6">
-                {/* Business Info Section */}
-                <div>
-                  <h4 className="font-medium mb-4">Business Information</h4>
-                  {feedback?.recommendations.some(rec => rec.includes('business name')) && (
-                    <div className="bg-yellow-50 p-2 rounded mb-2">
-                      <p className="text-yellow-700 text-sm">Add a business name</p>
-                    </div>
-                  )}
-                  <div className="grid gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Business Name
-                      </label>
-                      <input
-                        type="text"
-                        value={initialContent.businessInfo.name}
-                        onChange={(e) => handleBusinessInfoUpdate('name', e.target.value)}
-                        className="w-full p-2 border rounded"
-                        placeholder="Enter your business name"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Description
-                      </label>
-                      {feedback?.recommendations.some(rec => rec.includes('business description')) && (
-                        <div className="bg-yellow-50 p-2 rounded mb-2">
-                          <p className="text-yellow-700 text-sm">Add a business description</p>
-                        </div>
-                      )}
-                      <textarea
-                        value={initialContent.businessInfo.description}
-                        onChange={(e) => handleBusinessInfoUpdate('description', e.target.value)}
-                        rows={3}
-                        className="w-full p-2 border rounded"
-                        placeholder="Describe your business"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Mission Statement
-                      </label>
-                      {feedback?.recommendations.some(rec => rec.includes('mission statement')) && (
-                        <div className="bg-yellow-50 p-2 rounded mb-2">
-                          <p className="text-yellow-700 text-sm">Add a mission statement</p>
-                        </div>
-                      )}
-                      <textarea
-                        value={initialContent.businessInfo.mission}
-                        onChange={(e) => handleBusinessInfoUpdate('mission', e.target.value)}
-                        rows={2}
-                        className="w-full p-2 border rounded"
-                        placeholder="What is your business mission?"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Contact Information Section */}
-                <div>
-                  <h4 className="font-medium mb-4">Contact Information</h4>
-                  {feedback?.recommendations.some(rec => rec.includes('contact information')) && (
-                    <div className="bg-yellow-50 p-2 rounded mb-2">
-                      <p className="text-yellow-700 text-sm">Add contact information (email or phone)</p>
-                    </div>
-                  )}
-                  <div className="grid gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Email
-                      </label>
-                      <input
-                        type="email"
-                        value={initialContent.businessInfo.contact?.email || ''}
-                        onChange={(e) => {
-                          const updatedApp = {
-                            ...app,
-                            content: {
-                              ...initialContent,
-                              businessInfo: {
-                                ...initialContent.businessInfo,
-                                contact: {
-                                  ...initialContent.businessInfo.contact,
-                                  email: e.target.value
-                                }
-                              }
-                            }
-                          };
-                          onUpdate(updatedApp);
-                        }}
-                        className="w-full p-2 border rounded"
-                        placeholder="business@example.com"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Phone
-                      </label>
-                      <input
-                        type="tel"
-                        value={initialContent.businessInfo.contact?.phone || ''}
-                        onChange={(e) => {
-                          const updatedApp = {
-                            ...app,
-                            content: {
-                              ...initialContent,
-                              businessInfo: {
-                                ...initialContent.businessInfo,
-                                contact: {
-                                  ...initialContent.businessInfo.contact,
-                                  phone: e.target.value
-                                }
-                              }
-                            }
-                          };
-                          onUpdate(updatedApp);
-                        }}
-                        className="w-full p-2 border rounded"
-                        placeholder="(123) 456-7890"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Address
-                      </label>
-                      <textarea
-                        value={initialContent.businessInfo.contact?.address || ''}
-                        onChange={(e) => {
-                          const updatedApp = {
-                            ...app,
-                            content: {
-                              ...initialContent,
-                              businessInfo: {
-                                ...initialContent.businessInfo,
-                                contact: {
-                                  ...initialContent.businessInfo.contact,
-                                  address: e.target.value
-                                }
-                              }
-                            }
-                          };
-                          onUpdate(updatedApp);
-                        }}
-                        rows={2}
-                        className="w-full p-2 border rounded"
-                        placeholder="Enter your business address"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Business Hours
-                      </label>
-                      <div className="space-y-2">
-                        {initialContent.businessInfo.contact?.hours?.map((hour, index) => (
-                          <div key={index} className="flex gap-2">
-                            <input
-                              type="text"
-                              value={hour}
-                              onChange={(e) => {
-                                const updatedHours = [...(initialContent.businessInfo.contact?.hours || [])];
-                                updatedHours[index] = e.target.value;
-                                const updatedApp = {
-                                  ...app,
-                                  content: {
-                                    ...initialContent,
-                                    businessInfo: {
-                                      ...initialContent.businessInfo,
-                                      contact: {
-                                        ...initialContent.businessInfo.contact,
-                                        hours: updatedHours
-                                      }
-                                    }
-                                  }
-                                };
-                                onUpdate(updatedApp);
-                              }}
-                              className="flex-1 p-2 border rounded"
-                              placeholder="Monday - Friday: 9am - 5pm"
-                            />
-                            <button
-                              onClick={() => {
-                                const updatedHours = [...(initialContent.businessInfo.contact?.hours || [])];
-                                updatedHours.splice(index, 1);
-                                const updatedApp = {
-                                  ...app,
-                                  content: {
-                                    ...initialContent,
-                                    businessInfo: {
-                                      ...initialContent.businessInfo,
-                                      contact: {
-                                        ...initialContent.businessInfo.contact,
-                                        hours: updatedHours
-                                      }
-                                    }
-                                  }
-                                };
-                                onUpdate(updatedApp);
-                              }}
-                              className="text-red-600 hover:text-red-700"
-                            >
-                              ×
-                            </button>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                {/* Content Editor */}
+                <div className="bg-white p-6 rounded-lg shadow">
+                  <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-lg font-semibold">Content Editor</h3>
+                    {feedback && (
+                      <div className="flex items-center space-x-4">
+                        {feedback.recommendations.length > 0 ? (
+                          <div className="bg-yellow-50 p-3 rounded">
+                            <p className="text-yellow-700">
+                              Some fields are missing. You can add them below or proceed with the current content.
+                            </p>
                           </div>
-                        ))}
+                        ) : (
+                          <div className="bg-green-50 p-3 rounded">
+                            <p className="text-green-700">Great! Your content looks complete.</p>
+                          </div>
+                        )}
                         <button
-                          onClick={() => {
-                            const updatedApp = {
-                              ...app,
-                              content: {
-                                ...initialContent,
-                                businessInfo: {
-                                  ...initialContent.businessInfo,
-                                  contact: {
-                                    ...initialContent.businessInfo.contact,
-                                    hours: [
-                                      ...(initialContent.businessInfo.contact?.hours || []),
-                                      ''
-                                    ]
-                                  }
-                                }
-                              }
-                            };
-                            onUpdate(updatedApp);
-                          }}
-                          className="text-blue-600 hover:text-blue-700 text-sm"
+                          onClick={handleApplyToPreview}
+                          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
                         >
-                          + Add Business Hours
+                          Proceed to Preview
                         </button>
                       </div>
-                    </div>
+                    )}
                   </div>
-                </div>
-
-                {/* Services Section */}
-                <div>
-                  <h4 className="font-medium mb-4">Services</h4>
-                  {feedback?.recommendations.some(rec => rec.includes('service')) && (
-                    <div className="bg-yellow-50 p-2 rounded mb-2">
-                      <p className="text-yellow-700 text-sm">Add at least one service</p>
-                    </div>
-                  )}
-                  <div className="space-y-4">
-                    {initialContent.services?.map((service, index) => (
-                      <div key={index} className="border p-4 rounded space-y-4">
+                  <div className="space-y-6">
+                    {/* Business Info Section */}
+                    <div>
+                      <h4 className="font-medium mb-4">Business Information</h4>
+                      {feedback?.recommendations.some(rec => rec.includes('business name')) && (
+                        <div className="bg-yellow-50 p-2 rounded mb-2">
+                          <p className="text-yellow-700 text-sm">Add a business name</p>
+                        </div>
+                      )}
+                      <div className="grid gap-4">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Service Title
+                            Business Name
                           </label>
                           <input
                             type="text"
-                            value={service.title}
-                            onChange={(e) => {
-                              const updatedServices = [...(initialContent.services || [])];
-                              updatedServices[index] = {
-                                ...service,
-                                title: e.target.value
-                              };
-                              const updatedApp = {
-                                ...app,
-                                content: {
-                                  ...initialContent,
-                                  services: updatedServices
-                                }
-                              };
-                              onUpdate(updatedApp);
-                            }}
+                            value={initialContent.businessInfo.name}
+                            onChange={(e) => handleBusinessInfoUpdate('name', e.target.value)}
                             className="w-full p-2 border rounded"
-                            placeholder="Service name"
+                            placeholder="Enter your business name"
                           />
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
                             Description
                           </label>
+                          {feedback?.recommendations.some(rec => rec.includes('business description')) && (
+                            <div className="bg-yellow-50 p-2 rounded mb-2">
+                              <p className="text-yellow-700 text-sm">Add a business description</p>
+                            </div>
+                          )}
                           <textarea
-                            value={service.description}
-                            onChange={(e) => {
-                              const updatedServices = [...(initialContent.services || [])];
-                              updatedServices[index] = {
-                                ...service,
-                                description: e.target.value
-                              };
-                              const updatedApp = {
-                                ...app,
-                                content: {
-                                  ...initialContent,
-                                  services: updatedServices
-                                }
-                              };
-                              onUpdate(updatedApp);
-                            }}
+                            value={initialContent.businessInfo.description}
+                            onChange={(e) => handleBusinessInfoUpdate('description', e.target.value)}
                             rows={3}
                             className="w-full p-2 border rounded"
-                            placeholder="Describe this service"
+                            placeholder="Describe your business"
                           />
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Price
+                            Mission Statement
+                          </label>
+                          {feedback?.recommendations.some(rec => rec.includes('mission statement')) && (
+                            <div className="bg-yellow-50 p-2 rounded mb-2">
+                              <p className="text-yellow-700 text-sm">Add a mission statement</p>
+                            </div>
+                          )}
+                          <textarea
+                            value={initialContent.businessInfo.mission}
+                            onChange={(e) => handleBusinessInfoUpdate('mission', e.target.value)}
+                            rows={2}
+                            className="w-full p-2 border rounded"
+                            placeholder="What is your business mission?"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Contact Information Section */}
+                    <div>
+                      <h4 className="font-medium mb-4">Contact Information</h4>
+                      {feedback?.recommendations.some(rec => rec.includes('contact information')) && (
+                        <div className="bg-yellow-50 p-2 rounded mb-2">
+                          <p className="text-yellow-700 text-sm">Add contact information (email or phone)</p>
+                        </div>
+                      )}
+                      <div className="grid gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Email
                           </label>
                           <input
-                            type="text"
-                            value={service.price}
+                            type="email"
+                            value={initialContent.businessInfo.contact?.email || ''}
                             onChange={(e) => {
-                              const updatedServices = [...(initialContent.services || [])];
-                              updatedServices[index] = {
-                                ...service,
-                                price: e.target.value
-                              };
                               const updatedApp = {
                                 ...app,
                                 content: {
                                   ...initialContent,
-                                  services: updatedServices
+                                  businessInfo: {
+                                    ...initialContent.businessInfo,
+                                    contact: {
+                                      ...initialContent.businessInfo.contact,
+                                      email: e.target.value
+                                    }
+                                  }
                                 }
                               };
                               onUpdate(updatedApp);
                             }}
                             className="w-full p-2 border rounded"
-                            placeholder="Starting at $99"
+                            placeholder="business@example.com"
                           />
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Features
+                            Phone
+                          </label>
+                          <input
+                            type="tel"
+                            value={initialContent.businessInfo.contact?.phone || ''}
+                            onChange={(e) => {
+                              const updatedApp = {
+                                ...app,
+                                content: {
+                                  ...initialContent,
+                                  businessInfo: {
+                                    ...initialContent.businessInfo,
+                                    contact: {
+                                      ...initialContent.businessInfo.contact,
+                                      phone: e.target.value
+                                    }
+                                  }
+                                }
+                              };
+                              onUpdate(updatedApp);
+                            }}
+                            className="w-full p-2 border rounded"
+                            placeholder="(123) 456-7890"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Address
+                          </label>
+                          <textarea
+                            value={initialContent.businessInfo.contact?.address || ''}
+                            onChange={(e) => {
+                              const updatedApp = {
+                                ...app,
+                                content: {
+                                  ...initialContent,
+                                  businessInfo: {
+                                    ...initialContent.businessInfo,
+                                    contact: {
+                                      ...initialContent.businessInfo.contact,
+                                      address: e.target.value
+                                    }
+                                  }
+                                }
+                              };
+                              onUpdate(updatedApp);
+                            }}
+                            rows={2}
+                            className="w-full p-2 border rounded"
+                            placeholder="Enter your business address"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Business Hours
                           </label>
                           <div className="space-y-2">
-                            {service.features?.map((feature, featureIndex) => (
-                              <div key={featureIndex} className="flex gap-2">
+                            {initialContent.businessInfo.contact?.hours?.map((hour, index) => (
+                              <div key={index} className="flex gap-2">
                                 <input
                                   type="text"
-                                  value={feature}
+                                  value={hour}
                                   onChange={(e) => {
-                                    const updatedFeatures = [...(service.features || [])];
-                                    updatedFeatures[featureIndex] = e.target.value;
-                                    const updatedServices = [...(initialContent.services || [])];
-                                    updatedServices[index] = {
-                                      ...service,
-                                      features: updatedFeatures
-                                    };
+                                    const updatedHours = [...(initialContent.businessInfo.contact?.hours || [])];
+                                    updatedHours[index] = e.target.value;
                                     const updatedApp = {
                                       ...app,
                                       content: {
                                         ...initialContent,
-                                        services: updatedServices
+                                        businessInfo: {
+                                          ...initialContent.businessInfo,
+                                          contact: {
+                                            ...initialContent.businessInfo.contact,
+                                            hours: updatedHours
+                                          }
+                                        }
                                       }
                                     };
                                     onUpdate(updatedApp);
                                   }}
                                   className="flex-1 p-2 border rounded"
-                                  placeholder="Feature description"
+                                  placeholder="Monday - Friday: 9am - 5pm"
                                 />
                                 <button
                                   onClick={() => {
-                                    const updatedFeatures = [...(service.features || [])];
-                                    updatedFeatures.splice(featureIndex, 1);
-                                    const updatedServices = [...(initialContent.services || [])];
-                                    updatedServices[index] = {
-                                      ...service,
-                                      features: updatedFeatures
-                                    };
+                                    const updatedHours = [...(initialContent.businessInfo.contact?.hours || [])];
+                                    updatedHours.splice(index, 1);
                                     const updatedApp = {
                                       ...app,
                                       content: {
                                         ...initialContent,
-                                        services: updatedServices
+                                        businessInfo: {
+                                          ...initialContent.businessInfo,
+                                          contact: {
+                                            ...initialContent.businessInfo.contact,
+                                            hours: updatedHours
+                                          }
+                                        }
                                       }
                                     };
                                     onUpdate(updatedApp);
@@ -643,77 +474,255 @@ export default function PreviewEditor({ app, onUpdate }: PreviewEditorProps) {
                             ))}
                             <button
                               onClick={() => {
-                                const updatedServices = [...(initialContent.services || [])];
-                                updatedServices[index] = {
-                                  ...service,
-                                  features: [...(service.features || []), '']
-                                };
                                 const updatedApp = {
                                   ...app,
                                   content: {
                                     ...initialContent,
-                                    services: updatedServices
+                                    businessInfo: {
+                                      ...initialContent.businessInfo,
+                                      contact: {
+                                        ...initialContent.businessInfo.contact,
+                                        hours: [
+                                          ...(initialContent.businessInfo.contact?.hours || []),
+                                          ''
+                                        ]
+                                      }
+                                    }
                                   }
                                 };
                                 onUpdate(updatedApp);
                               }}
                               className="text-blue-600 hover:text-blue-700 text-sm"
                             >
-                              + Add Feature
+                              + Add Business Hours
                             </button>
                           </div>
                         </div>
-                        <div className="flex justify-end">
-                          <button
-                            onClick={() => {
-                              const updatedServices = [...(initialContent.services || [])];
-                              updatedServices.splice(index, 1);
-                              const updatedApp = {
-                                ...app,
-                                content: {
-                                  ...initialContent,
-                                  services: updatedServices
-                                }
-                              };
-                              onUpdate(updatedApp);
-                            }}
-                            className="text-red-600 hover:text-red-700 text-sm"
-                          >
-                            Remove Service
-                          </button>
-                        </div>
                       </div>
-                    ))}
-                    <button
-                      onClick={() => {
-                        const updatedApp = {
-                          ...app,
-                          content: {
-                            ...initialContent,
-                            services: [
-                              ...(initialContent.services || []),
-                              { title: '', description: '', price: '', features: [] }
-                            ]
-                          }
-                        };
-                        onUpdate(updatedApp);
-                      }}
-                      className="text-blue-600 hover:text-blue-700 text-sm"
-                    >
-                      + Add Service
-                    </button>
+                    </div>
+
+                    {/* Services Section */}
+                    <div>
+                      <h4 className="font-medium mb-4">Services</h4>
+                      {feedback?.recommendations.some(rec => rec.includes('service')) && (
+                        <div className="bg-yellow-50 p-2 rounded mb-2">
+                          <p className="text-yellow-700 text-sm">Add at least one service</p>
+                        </div>
+                      )}
+                      <div className="space-y-4">
+                        {initialContent.services?.map((service, index) => (
+                          <div key={index} className="border p-4 rounded space-y-4">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Service Title
+                              </label>
+                              <input
+                                type="text"
+                                value={service.title}
+                                onChange={(e) => {
+                                  const updatedServices = [...(initialContent.services || [])];
+                                  updatedServices[index] = {
+                                    ...service,
+                                    title: e.target.value
+                                  };
+                                  const updatedApp = {
+                                    ...app,
+                                    content: {
+                                      ...initialContent,
+                                      services: updatedServices
+                                    }
+                                  };
+                                  onUpdate(updatedApp);
+                                }}
+                                className="w-full p-2 border rounded"
+                                placeholder="Service name"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Description
+                              </label>
+                              <textarea
+                                value={service.description}
+                                onChange={(e) => {
+                                  const updatedServices = [...(initialContent.services || [])];
+                                  updatedServices[index] = {
+                                    ...service,
+                                    description: e.target.value
+                                  };
+                                  const updatedApp = {
+                                    ...app,
+                                    content: {
+                                      ...initialContent,
+                                      services: updatedServices
+                                    }
+                                  };
+                                  onUpdate(updatedApp);
+                                }}
+                                rows={3}
+                                className="w-full p-2 border rounded"
+                                placeholder="Describe this service"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Price
+                              </label>
+                              <input
+                                type="text"
+                                value={service.price}
+                                onChange={(e) => {
+                                  const updatedServices = [...(initialContent.services || [])];
+                                  updatedServices[index] = {
+                                    ...service,
+                                    price: e.target.value
+                                  };
+                                  const updatedApp = {
+                                    ...app,
+                                    content: {
+                                      ...initialContent,
+                                      services: updatedServices
+                                    }
+                                  };
+                                  onUpdate(updatedApp);
+                                }}
+                                className="w-full p-2 border rounded"
+                                placeholder="Starting at $99"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Features
+                              </label>
+                              <div className="space-y-2">
+                                {service.features?.map((feature, featureIndex) => (
+                                  <div key={featureIndex} className="flex gap-2">
+                                    <input
+                                      type="text"
+                                      value={feature}
+                                      onChange={(e) => {
+                                        const updatedFeatures = [...(service.features || [])];
+                                        updatedFeatures[featureIndex] = e.target.value;
+                                        const updatedServices = [...(initialContent.services || [])];
+                                        updatedServices[index] = {
+                                          ...service,
+                                          features: updatedFeatures
+                                        };
+                                        const updatedApp = {
+                                          ...app,
+                                          content: {
+                                            ...initialContent,
+                                            services: updatedServices
+                                          }
+                                        };
+                                        onUpdate(updatedApp);
+                                      }}
+                                      className="flex-1 p-2 border rounded"
+                                      placeholder="Feature description"
+                                    />
+                                    <button
+                                      onClick={() => {
+                                        const updatedFeatures = [...(service.features || [])];
+                                        updatedFeatures.splice(featureIndex, 1);
+                                        const updatedServices = [...(initialContent.services || [])];
+                                        updatedServices[index] = {
+                                          ...service,
+                                          features: updatedFeatures
+                                        };
+                                        const updatedApp = {
+                                          ...app,
+                                          content: {
+                                            ...initialContent,
+                                            services: updatedServices
+                                          }
+                                        };
+                                        onUpdate(updatedApp);
+                                      }}
+                                      className="text-red-600 hover:text-red-700"
+                                    >
+                                      ×
+                                    </button>
+                                  </div>
+                                ))}
+                                <button
+                                  onClick={() => {
+                                    const updatedServices = [...(initialContent.services || [])];
+                                    updatedServices[index] = {
+                                      ...service,
+                                      features: [...(service.features || []), '']
+                                    };
+                                    const updatedApp = {
+                                      ...app,
+                                      content: {
+                                        ...initialContent,
+                                        services: updatedServices
+                                      }
+                                    };
+                                    onUpdate(updatedApp);
+                                  }}
+                                  className="text-blue-600 hover:text-blue-700 text-sm"
+                                >
+                                  + Add Feature
+                                </button>
+                              </div>
+                            </div>
+                            <div className="flex justify-end">
+                              <button
+                                onClick={() => {
+                                  const updatedServices = [...(initialContent.services || [])];
+                                  updatedServices.splice(index, 1);
+                                  const updatedApp = {
+                                    ...app,
+                                    content: {
+                                      ...initialContent,
+                                      services: updatedServices
+                                    }
+                                  };
+                                  onUpdate(updatedApp);
+                                }}
+                                className="text-red-600 hover:text-red-700 text-sm"
+                              >
+                                Remove Service
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                        <button
+                          onClick={() => {
+                            const updatedApp = {
+                              ...app,
+                              content: {
+                                ...initialContent,
+                                services: [
+                                  ...(initialContent.services || []),
+                                  { title: '', description: '', price: '', features: [] }
+                                ]
+                              }
+                            };
+                            onUpdate(updatedApp);
+                          }}
+                          className="text-blue-600 hover:text-blue-700 text-sm"
+                        >
+                          + Add Service
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
-
-                {/* Apply Changes Button */}
-                <div className="flex justify-end">
-                  <button
-                    onClick={handleApplyToPreview}
-                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                  >
-                    Apply Changes to Preview
-                  </button>
-                </div>
+              </div>
+              
+              <div className="lg:col-span-1">
+                <ChatBot 
+                  content={initialContent}
+                  onUpdate={(updatedContent) => {
+                    const updatedApp = {
+                      ...app,
+                      content: updatedContent,
+                      updatedAt: new Date()
+                    };
+                    onUpdate(updatedApp);
+                  }}
+                />
               </div>
             </div>
           </div>
