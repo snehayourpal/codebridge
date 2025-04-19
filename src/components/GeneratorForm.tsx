@@ -87,21 +87,21 @@ export default function GeneratorForm({
   return (
     <div className="space-y-6">
       {/* Form Section */}
-      <div className="bg-white p-6 rounded-lg shadow">
+      <div className="bg-black p-6 rounded-lg shadow-[0_8px_16px_rgba(255,255,255,0.2)]">
         <div className="flex items-center mb-4">
           <button
             onClick={onBack}
-            className="text-[#010079] hover:text-[#1B73D3] mr-4"
+            className="text-white hover:text-gray-300 mr-4"
           >
-            ← Back
+            ←
           </button>
-          <h2 className="text-xl font-bold text-[#010079]">{template.name} Generator</h2>
+          <h2 className="text-xl font-bold text-white">{template.name} Generator</h2>
         </div>
 
         <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          className="w-full p-4 border rounded-lg mb-4 border-[#1B73D3] text-[#1B73D3]"
+          className="w-full p-4 border rounded-lg mb-4 border-white text-white"
           rows={4}
           placeholder="Describe your application..."
         />
@@ -109,9 +109,9 @@ export default function GeneratorForm({
         <button
           onClick={handleGenerate}
           disabled={isGenerating}
-          className="bg-[#1B73D3] text-white px-6 py-2 rounded-lg hover:bg-[#155bb0] disabled:bg-[#1B73D3]/50 transition-colors"
+          className="bg-white text-black font-bold px-6 py-2 rounded-lg hover:bg-gray-100 disabled:bg-gray-300 transition-colors"
         >
-          {isGenerating ? 'Generating...' : 'Generate App'}
+          {isGenerating ? 'generating...' : 'generate app'}
         </button>
 
         {error && (
