@@ -13,11 +13,13 @@ export default function TemplateSelector({
         <div
           key={template.id}
           onClick={() => onSelect(template)}
-          className="border rounded-lg p-6 cursor-pointer hover:shadow-md transition-shadow bg-[#010079]"
+          className="box cursor-pointer hover:shadow-lg transition-shadow bg-gray-900 flex flex-col h-full"
         >
-          <h3 className="text-xl text-white font-bold">{template.name}</h3>
-          <p className=" mt-2">{template.description}</p>
-          <div className="mt-4 text-sm text-[#1B73D3]">Use Template</div>
+          <div className="flex-grow">
+            <h3 className="text-xl text-white font-bold">{template.name}</h3>
+            <p className="mt-2 text-gray-300">{template.description}</p>
+          </div>
+          <div className="mt-auto pt-4 text-sm text-white">Use Template</div>
         </div>
       ))}
     </div>

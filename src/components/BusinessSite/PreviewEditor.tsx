@@ -200,7 +200,7 @@ export default function PreviewEditor({ app, onUpdate }: PreviewEditorProps) {
               </button>
               <a
                 href="/my-apps"
-                className="text-gray-600 hover:text-gray-800"
+                className="px-4 py-2 rounded-md text-gray-600 hover:text-gray-800"
               >
                 Exit Editor
               </a>
