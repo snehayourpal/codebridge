@@ -17,9 +17,8 @@ export default function TemplateSelector({
         >
           <div className="flex-grow">
             <h3 className="text-xl text-white font-bold">{template.name}</h3>
-            <p className="mt-2 text-gray-300">{template.description}</p>
+            <p className="mt-2 text-gray-300 italic">{template.description}</p>
           </div>
-          <div className="mt-auto pt-4 text-sm text-white">Use Template</div>
         </div>
       ))}
     </div>
